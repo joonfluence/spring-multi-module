@@ -1,0 +1,39 @@
+rootProject.name = 'multi-module-test-2'
+
+def file(dir, name){
+    return file("${dir.absolutePath}/${name}")
+}
+
+def GRADLE_TEXT = """
+
+dependencies {}
+"""
+
+["sp", "test", "web", "server"].forEach (moduleName -> {
+    def moduleDir = file(rootDir, moduleName)
+    if(!moduleDir.exists()){
+        moduleDir.mkdirs()
+    }
+
+    moduleDir.eachFile {subProjectDir ->
+        def buildFile = file(subProjectDir, "build.gradle")
+        if(!buildFile.exists()){
+            buildFile.text = GRADLE_TEXT
+        }
+        def projectNames = ":${moduleName}-${subProjectDir.name}"
+        include projectNames
+        project(projectNames).projectDir = subProjectDir
+
+        [
+                "src/main/java/com/sp/unitt",
+                "src/main/resources",
+                "src/test/java/com/sp/unitt",
+                "src/test/resources"
+        ].forEach (src -> {
+            def srcDir = file(subProjectDir, src)
+            if(!srcDir.exists()){
+                srcDir.mkdirs()
+            }
+        })
+    }
+})

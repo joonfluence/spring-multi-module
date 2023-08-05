@@ -1,0 +1,51 @@
+buildscript {
+    ext {
+        spring = "org.springframework"
+        boot = "${spring}.boot"
+        bootVersion = "3.1.2"
+        lombok = "org.projectlombok:lombok"
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("${boot}:spring-boot-gradle-plugin:${bootVersion}")
+    }
+}
+
+allprojects {
+    group("com.sp.unitt")
+    version("1.0.0")
+}
+
+subprojects {
+    apply plugin: "java-library"
+    apply plugin: boot
+    apply plugin: "io.spring.dependency-management"
+
+    repositories {
+        mavenCentral()
+    }
+
+    configurations {
+        compileOnly
+    }
+
+    dependencies {
+        compileOnly lombok
+        annotationProcessor lombok
+        testImplementation "$boot:spring-boot-starter-test"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+rootProject.subprojects {
+    if(!it.name.startsWith("server-")){
+        it.tasks["bootJar"].enabled = false
+    }
+}
