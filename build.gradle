@@ -16,7 +16,7 @@ buildscript {
 }
 
 allprojects {
-    group("com.sp.unitt")
+    group("com.hello.world")
     version("1.0.0")
 }
 

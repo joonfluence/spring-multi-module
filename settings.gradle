@@ -1,4 +1,4 @@
-rootProject.name = 'multi-module-test-2'
+rootProject.name = 'spring-multi-module'
 
 def file(dir, name){
     return file("${dir.absolutePath}/${name}")
@@ -9,28 +9,29 @@ def GRADLE_TEXT = """
 dependencies {}
 """
 
-["sp", "test", "web", "server"].forEach (moduleName -> {
+["domain", "app"].forEach (moduleName -> {
     def moduleDir = file(rootDir, moduleName)
+    def subDir = file(rootDir, moduleName + "/src")
     if(!moduleDir.exists()){
         moduleDir.mkdirs()
+        subDir.mkdirs()
     }
 
     moduleDir.eachFile {subProjectDir ->
-        def buildFile = file(subProjectDir, "build.gradle")
+        def buildFile = file(moduleDir, "build.gradle")
         if(!buildFile.exists()){
             buildFile.text = GRADLE_TEXT
         }
-        def projectNames = ":${moduleName}-${subProjectDir.name}"
-        include projectNames
-        project(projectNames).projectDir = subProjectDir
+
+        include moduleName
 
         [
-                "src/main/java/com/sp/unitt",
-                "src/main/resources",
-                "src/test/java/com/sp/unitt",
-                "src/test/resources"
+            "src/main/java/com/hello/world",
+            "src/main/resources",
+            "src/test/java/com/hello/world",
+            "src/test/resources"
         ].forEach (src -> {
-            def srcDir = file(subProjectDir, src)
+            def srcDir = file(moduleDir, src)
             if(!srcDir.exists()){
                 srcDir.mkdirs()
             }
