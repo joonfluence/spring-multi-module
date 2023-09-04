@@ -9,7 +9,7 @@ def GRADLE_TEXT = """
 dependencies {}
 """
 
-["domain", "app"].forEach (moduleName -> {
+["domain", "app", "app-2"].forEach (moduleName -> {
     def moduleDir = file(rootDir, moduleName)
     def subDir = file(rootDir, moduleName + "/src")
     if(!moduleDir.exists()){
